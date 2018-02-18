@@ -1,9 +1,10 @@
 
 
-import Threads.FlyerThread;
-import Threads.GdaxThread;
-import handlers.HandlerResponse;
-import Threads.StampThread;
+import entity.MyHashMap;
+import exchanger.impl.FlyerThread;
+import exchanger.impl.GdaxThread;
+import handlers.impl.HandlerResponse;
+import exchanger.impl.StampThread;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,11 +12,10 @@ import java.util.List;
 import entity.CommonOrders;
 import exchanger.Exchanger;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         try {
             start();
         } catch (InterruptedException e) {
@@ -24,6 +24,12 @@ public class Main {
     }
 
     private static void start() throws InterruptedException {
+        List<String> pairsCommon = new ArrayList<>();
+        pairsCommon.add("btc_usd");
+        pairsCommon.add("eth_usd");
+        pairsCommon.add("eth_btc");
+        pairsCommon.add("LTC_BTC");
+
         List<String> pairs1 = new ArrayList<>();
         pairs1.add("btc_usd");
         pairs1.add("eth_usd");
@@ -42,9 +48,9 @@ public class Main {
         pairs3.add("LTC-BTC");
 
         HandlerResponse handlerResponse = new HandlerResponse(
-                new CommonOrders(new HashMap<>())
-                , new CommonOrders(new HashMap<>())
-                , pairs1);
+                new CommonOrders(new MyHashMap<>(pairsCommon))
+                , new CommonOrders(new MyHashMap<>(pairsCommon))
+                , pairsCommon);
         Exchanger flyerThread = new FlyerThread(handlerResponse, pairs1);
         Exchanger stampThread = new StampThread(handlerResponse, pairs2);
         Exchanger gdax = new GdaxThread(handlerResponse, pairs3);

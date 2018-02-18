@@ -1,22 +1,24 @@
 package entity;
 
-import java.util.List;
+
 
 import java.util.HashMap;
 
 public class CommonOrders<E> {
-    private HashMap<String, List<CommonOrder>> map;
 
-    public CommonOrders(HashMap<String, List<CommonOrder>> map) {
+    private HashMap<String, E> map;
+
+    public CommonOrders(HashMap<String, E> map) {
         this.map = map;
     }
 
-    public HashMap<String, List<CommonOrder>> getMap() {
-
+    public HashMap<String, E> getMap() {
         return map;
     }
 
-    public void setMap(HashMap<String, List<CommonOrder>> map) {
+
+    public void setMap(HashMap<String, E> map) {
         this.map = map;
+
     }
 }

@@ -1,5 +1,6 @@
 package bitFlyer;
 
+import entity.MyList;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
@@ -9,5 +10,5 @@ import java.util.List;
 
 public interface Orders {
     @GET("/v1/executions")
-    Call<List<Trade>> getData(@Query("product_code") String resourceName);
+    Call<MyList<Trade>> getData(@Query("product_code") String resourceName);
 }
