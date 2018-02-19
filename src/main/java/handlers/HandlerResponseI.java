@@ -12,6 +12,9 @@ public interface HandlerResponseI {
 
     void execute(MyList<CommonOrder> commonOrders, String pair);
 
-    MyList<CommonOrder> merge(MyList<CommonOrder> commonOrders
-            , MyList<CommonOrder> commonOrders1);
+//    MyList<CommonOrder> merge(MyList<CommonOrder> commonOrders
+//            , MyList<CommonOrder> commonOrders1);
+
+    MyList<CommonOrder> merge(MyList<CommonOrder> newOrders
+            , MyList<CommonOrder> oldOrders, String pair);
 }

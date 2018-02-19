@@ -28,11 +28,9 @@ public class Main {
         pairsCommon.add("btc_usd");
         pairsCommon.add("eth_usd");
         pairsCommon.add("eth_btc");
-        pairsCommon.add("LTC_BTC");
 
         List<String> pairs1 = new ArrayList<>();
         pairs1.add("btc_usd");
-        pairs1.add("eth_usd");
         pairs1.add("eth_btc");
         pairs1.add("LTC_BTC");
 

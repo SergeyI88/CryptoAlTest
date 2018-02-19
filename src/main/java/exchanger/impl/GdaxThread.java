@@ -1,32 +1,35 @@
 package exchanger.impl;
 
 import entity.CommonOrder;
+import entity.MyHashMap;
 import entity.MyList;
 import exchanger.Exchanger;
-import gdax.Gdax;
-import gdax.Trade;
+import api.gdax.Gdax;
+import api.gdax.Trade;
 import handlers.impl.HandlerResponse;
 import retrofit2.Response;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GdaxThread extends Thread implements Exchanger {
-    HandlerResponse handlerResponse;
-    List<String> pairs;
-    List<String> pairsCommon;
+    private HandlerResponse handlerResponse;
+    private List<String> pairs;
+    private List<String> pairsCommon;
+    private MyHashMap<String, MyList<CommonOrder>> map;
 
 
     public GdaxThread(HandlerResponse handlerResponse, List<String> pairs) {
         this.handlerResponse = handlerResponse;
         List<String> pairsTemp = new ArrayList<>();
         this.pairs = pairs;
+        map = new MyHashMap<>();
         for (String s : pairs) {
             StringBuilder stringBuilder = new StringBuilder(s);
             stringBuilder.setCharAt(3, '_');
             pairsTemp.add(stringBuilder.toString());
+            map.put(stringBuilder.toString(), new MyList<>());
         }
         this.pairsCommon = pairsTemp;
     }
@@ -37,7 +40,11 @@ public class GdaxThread extends Thread implements Exchanger {
             while (true) {
                 for (int i = 0; i < pairs.size(); i++) {
                     Response<MyList<Trade>> response = Gdax.get().getData(pairs.get(i)).execute();
-                    handlerResponse.execute(convertToCommon(response.body(), pairsCommon.get(i)), pairsCommon.get(i));
+                    MyList<CommonOrder> temp = convertToCommon(response.body(), pairsCommon.get(i));
+                    if (checkOrders(temp, pairsCommon.get(i))) {
+                        map.put(pairsCommon.get(i), temp);
+                        handlerResponse.execute(temp, pairsCommon.get(i));
+                    };
                 }
             }
         } catch (IOException e) {
@@ -45,8 +52,11 @@ public class GdaxThread extends Thread implements Exchanger {
     }
 
     @Override
-    public List<CommonOrder> getOrders(List<?> orders) {
-        return null;
+    public boolean checkOrders(MyList<?> newOrders, String pair) {
+        long i = newOrders.getSizeAll();
+        long j = map.get(pair).getSizeAll();
+        System.out.println(i + "  новое" + j + " старое" + currentThread().getName());
+        return newOrders.getSizeAll() > map.get(pair).getSizeAll();
     }
 
     @Override

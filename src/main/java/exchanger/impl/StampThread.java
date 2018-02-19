@@ -1,8 +1,9 @@
 package exchanger.impl;
 
-import bitstamp.Stamp;
-import bitstamp.Trade;
+import api.bitstamp.Stamp;
+import api.bitstamp.Trade;
 import entity.CommonOrder;
+import entity.MyHashMap;
 import entity.MyList;
 import exchanger.Exchanger;
 import handlers.impl.HandlerResponse;
@@ -15,18 +16,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StampThread extends Thread implements Exchanger {
-    HandlerResponse handlerResponse;
-    List<String> pairs;
-    List<String> pairsCommon;
+    private HandlerResponse handlerResponse;
+    private List<String> pairs;
+    private List<String> pairsCommon;
+    private MyHashMap<String, MyList<CommonOrder>> map;
 
     public StampThread(HandlerResponse handlerResponse, List<String> pairs) {
         this.handlerResponse = handlerResponse;
         List<String> pairsTemp = new ArrayList<>();
         this.pairs = pairs;
-
+        map = new MyHashMap<>();
         for(String s : pairs) {
-            pairsTemp.add(new StringBuilder(s).insert(3, '_').toString());
-            System.out.println();
+            String temp = new StringBuilder(s).insert(3, '_').toString();
+            pairsTemp.add(temp);
+            map.put(temp, new MyList<>());
         }
         this.pairsCommon = pairsTemp;
     }
@@ -37,7 +40,11 @@ public class StampThread extends Thread implements Exchanger {
             while (true) {
                 for (int i = 0; i < pairs.size(); i++) {
                     Response<MyList<Trade>> response = Stamp.get().getData(pairs.get(i)).execute();
-                    handlerResponse.execute(convertToCommon(response.body(), pairsCommon.get(i)), pairsCommon.get(i));
+                    MyList<CommonOrder> temp = convertToCommon(response.body(), pairsCommon.get(i));
+                    if (checkOrders(temp, pairsCommon.get(i))) {
+                       map.put(pairsCommon.get(i), temp);
+                       handlerResponse.execute(temp, pairsCommon.get(i));
+                    }
                 }
             }
         } catch (IOException e) {
@@ -46,8 +53,11 @@ public class StampThread extends Thread implements Exchanger {
     }
 
     @Override
-    public List<CommonOrder> getOrders(List<?> orders) {
-        return null;
+    public boolean checkOrders(MyList<?> newOrders, String pair) {
+        long i = newOrders.getSizeAll();
+        long j = map.get(pair).getSizeAll();
+        System.out.println(i + "  новое" + j + " старое"  + currentThread().getName());
+        return newOrders.getSizeAll() > map.get(pair).getSizeAll();
     }
 
 

@@ -12,6 +12,9 @@ public class MyHashMap <K, V> extends HashMap<K, V> {
         sizeAll = new ArrayList<>();
     }
 
+    public MyHashMap() {
+    }
+
     @Override
     public V put(K key, V value) {
         return super.put(key, value);

@@ -6,8 +6,8 @@ import entity.MyList;
 import java.util.List;
 
 public interface Exchanger {
-    List<CommonOrder> getOrders(List<?> orders);
 
+    boolean checkOrders(MyList<?> newOrders, String pair);
 
     MyList<CommonOrder> convertToCommon(MyList<?> orders, String pair);
 }

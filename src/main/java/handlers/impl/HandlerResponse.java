@@ -56,7 +56,7 @@ public class HandlerResponse extends Thread implements HandlerResponseI {
     public void execute(MyList<CommonOrder> commonOrders, String pair) {
         all.getMap()
                 .put(pair
-                        , merge(commonOrders, all.getMap().get(pair)));
+                        , merge(commonOrders, all.getMap().get(pair), pair));
 
         top.getMap()
                 .put(pair, all
@@ -76,14 +76,16 @@ public class HandlerResponse extends Thread implements HandlerResponseI {
     }
 
     @Override
-    public synchronized MyList<CommonOrder> merge(MyList<CommonOrder> commonOrders
-            , MyList<CommonOrder> commonOrders1) {
-        Collection<CommonOrder> collection = new MyList<>(commonOrders1);
-        for (CommonOrder c : commonOrders) {
+    public synchronized MyList<CommonOrder> merge(MyList<CommonOrder> newOrders
+            , MyList<CommonOrder> oldOrders, String pair) {
+        Collection<CommonOrder> collection = new MyList<>(oldOrders);
+        for (CommonOrder c : newOrders) {
             if (!collection.contains(c)) {
                 collection.add(c);
             }
         }
-        return (MyList<CommonOrder>) collection;
+        MyList<CommonOrder> list = (MyList<CommonOrder>) collection;
+        list.setSizeAll(((MyList<CommonOrder>) collection).getSizeAll());
+        return list;
     }
 }
