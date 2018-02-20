@@ -6,7 +6,7 @@ import entity.CommonOrder;
 import entity.MyHashMap;
 import entity.MyList;
 import exchanger.Exchanger;
-import handlers.impl.HandlerResponse;
+import handlers.impl.HandlerResponseTOP;
 import retrofit2.Response;
 
 import java.io.IOException;
@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FlyerThread extends Thread implements Exchanger {
-    private HandlerResponse handlerResponse;
+    private HandlerResponseTOP handlerResponse;
     private List<String> pairs;
     private MyHashMap<String, MyList<CommonOrder>> map;
 
-    public FlyerThread(HandlerResponse handlerResponse, List<String> pairs) {
+    public FlyerThread(HandlerResponseTOP handlerResponse, List<String> pairs) {
         this.handlerResponse = handlerResponse;
         this.pairs = pairs;
         map = new MyHashMap<>();
@@ -46,10 +46,7 @@ public class FlyerThread extends Thread implements Exchanger {
 
     @Override
     public boolean checkOrders(MyList<?> newOrders, String pair) {
-        long i = newOrders.getSizeAll();
-        long j = map.get(pair).getSizeAll();
-        System.out.println(i + "  новое" + j + " старое " + currentThread().getName() + " " + pair);
-        return newOrders.getSizeAll() > map.get(pair).getSizeAll();
+        return newOrders.getSizeAll() != map.get(pair).getSizeAll();
     }
 
     public MyList<CommonOrder> convertToCommon(MyList<?> orders, String pair) {

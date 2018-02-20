@@ -6,7 +6,7 @@ import entity.MyList;
 import exchanger.Exchanger;
 import api.gdax.Gdax;
 import api.gdax.Trade;
-import handlers.impl.HandlerResponse;
+import handlers.impl.HandlerResponseTOP;
 import retrofit2.Response;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GdaxThread extends Thread implements Exchanger {
-    private HandlerResponse handlerResponse;
+    private HandlerResponseTOP handlerResponse;
     private List<String> pairs;
     private List<String> pairsCommon;
     private MyHashMap<String, MyList<CommonOrder>> map;
 
 
-    public GdaxThread(HandlerResponse handlerResponse, List<String> pairs) {
+    public GdaxThread(HandlerResponseTOP handlerResponse, List<String> pairs) {
         this.handlerResponse = handlerResponse;
         List<String> pairsTemp = new ArrayList<>();
         this.pairs = pairs;
@@ -53,10 +53,7 @@ public class GdaxThread extends Thread implements Exchanger {
 
     @Override
     public boolean checkOrders(MyList<?> newOrders, String pair) {
-        long i = newOrders.getSizeAll();
-        long j = map.get(pair).getSizeAll();
-        System.out.println(i + "  новое" + j + " старое" + currentThread().getName());
-        return newOrders.getSizeAll() > map.get(pair).getSizeAll();
+        return newOrders.getSizeAll() != map.get(pair).getSizeAll();
     }
 
     @Override

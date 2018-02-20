@@ -3,10 +3,9 @@
 import entity.MyHashMap;
 import exchanger.impl.FlyerThread;
 import exchanger.impl.GdaxThread;
-import handlers.impl.HandlerResponse;
+import handlers.impl.HandlerResponseTOP;
 import exchanger.impl.StampThread;
 
-import java.util.HashMap;
 import java.util.List;
 
 import entity.CommonOrders;
@@ -24,20 +23,25 @@ public class Main {
     }
 
     private static void start() throws InterruptedException {
+//        BTC/USD, ETH/USD, ETH/BTC, USD/LTC, LTC/BTC
         List<String> pairsCommon = new ArrayList<>();
         pairsCommon.add("btc_usd");
         pairsCommon.add("eth_usd");
         pairsCommon.add("eth_btc");
+        pairsCommon.add("LTC_BTC");
+        pairsCommon.add("usd_ltc");
 
         List<String> pairs1 = new ArrayList<>();
         pairs1.add("btc_usd");
         pairs1.add("eth_btc");
-        pairs1.add("LTC_BTC");
+        pairs1.add("eth_usd");
+        pairs1.add("usd_ltc");
 
         List<String> pairs2 = new ArrayList<>();
         pairs2.add("btcusd");
         pairs2.add("ethusd");
         pairs2.add("ethbtc");
+
 
         List<String> pairs3 = new ArrayList<>();
         pairs3.add("btc-usd");
@@ -45,7 +49,8 @@ public class Main {
         pairs3.add("eth-btc");
         pairs3.add("LTC-BTC");
 
-        HandlerResponse handlerResponse = new HandlerResponse(
+
+        HandlerResponseTOP handlerResponse = new HandlerResponseTOP(
                 new CommonOrders(new MyHashMap<>(pairsCommon))
                 , new CommonOrders(new MyHashMap<>(pairsCommon))
                 , pairsCommon);
